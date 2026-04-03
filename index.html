@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🐒 Jungle Escape - Monkey Adventure!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header with lives and score -->
+        <div class="game-stats">
+            <div class="stat">
+                <span class="stat-icon">❤️</span>
+                <span id="lives">3</span>
+            </div>
+            <div class="stat">
+                <span class="stat-icon">🍌</span>
+                <span id="score">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-icon">🏆</span>
+                <span id="level-name">Jungle</span>
+            </div>
+        </div>
+
+        <!-- Game canvas (where everything happens) -->
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+        <!-- Level selection grid (tabs) -->
+        <div class="level-grid">
+            <button class="level-tab" data-level="1" data-name="Jungle">🌿 Level 1<br>Jungle</button>
+            <button class="level-tab" data-level="2" data-name="River">💧 Level 2<br>River</button>
+            <button class="level-tab" data-level="3" data-name="Cave">🦇 Level 3<br>Cave</button>
+            <button class="level-tab" data-level="4" data-name="Volcano">🌋 Level 4<br>Volcano</button>
+            <button class="level-tab" data-level="5" data-name="Treetops">🌳 Level 5<br>Treetops</button>
+        </div>
+
+        <!-- On-screen touch buttons for kids -->
+        <div class="action-buttons">
+            <button id="jumpBtn" class="action-btn jump-btn">
+                ⬆️<br>JUMP
+            </button>
+            <button id="slideBtn" class="action-btn slide-btn">
+                ⬇️<br>SLIDE
+            </button>
+        </div>
+
+        <!-- Message area for game events -->
+        <div id="game-message" class="game-message"></div>
+    </div>
+
+    <!-- Load level data files first -->
+    <script src="levels/level1.js"></script>
+    <script src="levels/level2.js"></script>
+    <script src="levels/level3.js"></script>
+    <script src="levels/level4.js"></script>
+    <script src="levels/level5.js"></script>
+    
+    <!-- Main game engine -->
+    <script src="game.js"></script>
+</body>
+</html>
