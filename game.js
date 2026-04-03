@@ -11,7 +11,7 @@ let levelComplete = false;
 let currentSegmentIndex = 0;
 let segmentProgress = 0;
 let monkeyX = 100;  // Fixed X position, world moves past him
-let monkeyY = 280;  // Ground Y position
+let monkeyY = 270;  // Ground Y position (adjusted for better monkey drawing)
 let worldOffset = 0;
 let currentAction = null;  // 'jump', 'slide', or null
 let actionCooldown = 0;
@@ -393,6 +393,7 @@ function updateTunnelSegment() {
 
 //part 4
 // ---------- DRAWING ----------
+// ---------- DRAWING (WITH REAL MONKEY!) ----------
 function draw() {
     ctx.clearRect(0, 0, 800, 400);
     
@@ -403,7 +404,7 @@ function draw() {
         ctx.fillStyle = '#8B7355';
         ctx.fillRect(0, 350, 800, 50);
         // Torch effect
-        ctx.fillStyle = 'rgba(255, 200, 100, 0.2)';
+        ctx.fillStyle = 'rgba(255, 200, 100, 0.15)';
         ctx.fillRect(0, 0, 800, 400);
     } else {
         // Sky
@@ -415,26 +416,102 @@ function draw() {
         // Ground detail line
         ctx.fillStyle = '#556B2F';
         ctx.fillRect(0, 300, 800, 5);
+        // Grass details
+        ctx.fillStyle = '#228B22';
+        for(let i = 0; i < 20; i++) {
+            ctx.fillRect(i * 40, 295, 3, 10);
+        }
     }
     
     // Draw obstacles
     for (let obs of obstacles) {
         let x = obs.x - worldOffset;
         if (x > -50 && x < 850) {
-            if (obs.type === 'snake' || obs.type === 'crocodile') {
+            if (obs.type === 'snake') {
                 ctx.fillStyle = '#228B22';
-                ctx.fillRect(x, 290, 30, 20);
+                ctx.fillRect(x, 295, 35, 12);
                 ctx.fillStyle = '#FF0000';
-                ctx.fillRect(x + 10, 285, 10, 5);
-            } else if (obs.type === 'branch') {
+                ctx.fillRect(x + 25, 292, 8, 6);
+                // Snake tongue
+                ctx.beginPath();
+                ctx.moveTo(x + 33, 298);
+                ctx.lineTo(x + 40, 295);
+                ctx.lineTo(x + 38, 301);
+                ctx.fillStyle = '#FF4444';
+                ctx.fill();
+            } 
+            else if (obs.type === 'crocodile') {
+                ctx.fillStyle = '#2E8B57';
+                ctx.fillRect(x, 290, 45, 18);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(x + 5, 292, 6, 6);
+                ctx.fillRect(x + 30, 292, 6, 6);
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(x + 7, 294, 3, 3);
+                ctx.fillRect(x + 32, 294, 3, 3);
+            }
+            else if (obs.type === 'branch') {
                 ctx.fillStyle = '#8B4513';
-                ctx.fillRect(x, 260, 40, 10);
-            } else if (obs.type === 'bat') {
-                ctx.fillStyle = '#4a4a4a';
-                ctx.fillRect(x, 250, 25, 15);
-            } else if (obs.type === 'log') {
+                ctx.fillRect(x, 260, 50, 8);
+                ctx.fillStyle = '#654321';
+                ctx.fillRect(x + 20, 250, 8, 15);
+            }
+            else if (obs.type === 'bat') {
+                ctx.fillStyle = '#3a3a3a';
+                ctx.beginPath();
+                ctx.ellipse(x + 15, 260, 12, 8, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#1a1a1a';
+                ctx.beginPath();
+                ctx.ellipse(x + 10, 258, 3, 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(x + 20, 258, 3, 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            else if (obs.type === 'log') {
                 ctx.fillStyle = '#CD853F';
-                ctx.fillRect(x, 290, 40, 15);
+                ctx.fillRect(x, 295, 45, 12);
+                ctx.fillStyle = '#8B4513';
+                for(let i = 0; i < 3; i++) {
+                    ctx.fillRect(x + 5 + i*12, 298, 5, 6);
+                }
+            }
+            else if (obs.type === 'lava') {
+                ctx.fillStyle = '#FF4500';
+                ctx.fillRect(x, 300, 40, 10);
+                ctx.fillStyle = '#FF6600';
+                for(let i = 0; i < 4; i++) {
+                    ctx.beginPath();
+                    ctx.arc(x + 5 + i*10, 305, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            else if (obs.type === 'stalactite') {
+                ctx.fillStyle = '#8B8682';
+                ctx.beginPath();
+                ctx.moveTo(x + 5, 260);
+                ctx.lineTo(x + 15, 290);
+                ctx.lineTo(x + 25, 260);
+                ctx.fill();
+            }
+            else if (obs.type === 'mushroom') {
+                ctx.fillStyle = '#FF6347';
+                ctx.beginPath();
+                ctx.arc(x + 10, 295, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#FFFFFF';
+                for(let i = 0; i < 3; i++) {
+                    ctx.beginPath();
+                    ctx.arc(x + 6 + i*3, 293, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            else if (obs.type === 'rock') {
+                ctx.fillStyle = '#696969';
+                ctx.beginPath();
+                ctx.ellipse(x + 15, 300, 12, 8, 0, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
     }
@@ -446,47 +523,197 @@ function draw() {
             if (x > -50 && x < 850) {
                 ctx.fillStyle = '#FFD700';
                 ctx.beginPath();
-                ctx.arc(x + 10, 295, 8, 0, Math.PI * 2);
+                ctx.ellipse(x + 10, 295, 7, 9, -0.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#DAA520';
+                ctx.beginPath();
+                ctx.ellipse(x + 8, 293, 2, 4, -0.3, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
     }
     
-    // Draw monkey (with invincibility blink)
-    let alpha = (invincibleFrames > 0 && Math.floor(Date.now() / 50) % 2 === 0) ? 0.5 : 1;
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = '#8B5A2B';
-    ctx.beginPath();
-    ctx.arc(100, monkeyY, 20, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#FFE4B5';
-    ctx.beginPath();
-    ctx.arc(90, monkeyY - 5, 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#000000';
-    ctx.beginPath();
-    ctx.arc(88, monkeyY - 7, 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#FF6600';
-    ctx.beginPath();
-    ctx.ellipse(105, monkeyY + 5, 8, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
+    // ============================================
+    // 🐒 DRAW THE REAL MONKEY! 🐒
+    // ============================================
+    let invincibleBlink = (invincibleFrames > 0 && Math.floor(Date.now() / 100) % 2 === 0);
+    if (!invincibleBlink) {
+        
+        let monkeyBaseY = monkeyY;
+        
+        // Monkey body (brown)
+        ctx.fillStyle = '#8B5A2B';
+        ctx.beginPath();
+        ctx.ellipse(100, monkeyBaseY + 5, 18, 22, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Belly (lighter)
+        ctx.fillStyle = '#D2B48C';
+        ctx.beginPath();
+        ctx.ellipse(100, monkeyBaseY + 8, 12, 15, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Head
+        ctx.fillStyle = '#8B5A2B';
+        ctx.beginPath();
+        ctx.ellipse(100, monkeyBaseY - 8, 16, 16, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Face (tan)
+        ctx.fillStyle = '#FFE4B5';
+        ctx.beginPath();
+        ctx.ellipse(100, monkeyBaseY - 6, 12, 11, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Ears
+        ctx.fillStyle = '#8B5A2B';
+        ctx.beginPath();
+        ctx.ellipse(83, monkeyBaseY - 12, 7, 9, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(117, monkeyBaseY - 12, 7, 9, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Inner ears
+        ctx.fillStyle = '#D2B48C';
+        ctx.beginPath();
+        ctx.ellipse(83, monkeyBaseY - 12, 4, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(117, monkeyBaseY - 12, 4, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Eyes (white)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(92, monkeyBaseY - 10, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(108, monkeyBaseY - 10, 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Pupils
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.arc(93, monkeyBaseY - 10, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(109, monkeyBaseY - 10, 2, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Eye shine
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(91, monkeyBaseY - 12, 1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(107, monkeyBaseY - 12, 1, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Nose
+        ctx.fillStyle = '#8B4513';
+        ctx.beginPath();
+        ctx.arc(100, monkeyBaseY - 5, 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Mouth (happy!)
+        ctx.beginPath();
+        ctx.arc(100, monkeyBaseY - 2, 6, 0.1, Math.PI - 0.1);
+        ctx.strokeStyle = '#5a3a1a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Cheeks
+        ctx.fillStyle = '#FFB6C1';
+        ctx.beginPath();
+        ctx.arc(87, monkeyBaseY - 6, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(113, monkeyBaseY - 6, 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Arms
+        ctx.beginPath();
+        ctx.moveTo(82, monkeyBaseY + 2);
+        ctx.lineTo(65, monkeyBaseY + 10);
+        ctx.lineTo(78, monkeyBaseY + 8);
+        ctx.fillStyle = '#8B5A2B';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(118, monkeyBaseY + 2);
+        ctx.lineTo(135, monkeyBaseY + 10);
+        ctx.lineTo(122, monkeyBaseY + 8);
+        ctx.fill();
+        
+        // Hands
+        ctx.fillStyle = '#D2B48C';
+        ctx.beginPath();
+        ctx.ellipse(63, monkeyBaseY + 10, 5, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(137, monkeyBaseY + 10, 5, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Legs
+        ctx.fillStyle = '#8B5A2B';
+        ctx.fillRect(88, monkeyBaseY + 18, 8, 12);
+        ctx.fillRect(104, monkeyBaseY + 18, 8, 12);
+        
+        // Feet
+        ctx.fillStyle = '#D2B48C';
+        ctx.beginPath();
+        ctx.ellipse(90, monkeyBaseY + 30, 6, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(110, monkeyBaseY + 30, 6, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Tail (curly!)
+        ctx.beginPath();
+        ctx.moveTo(118, monkeyBaseY + 15);
+        ctx.quadraticCurveTo(140, monkeyBaseY + 10, 135, monkeyBaseY + 25);
+        ctx.quadraticCurveTo(130, monkeyBaseY + 35, 125, monkeyBaseY + 28);
+        ctx.strokeStyle = '#8B5A2B';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        
+        // Hat if in jungle level (cute)
+        if (currentLevel === 1) {
+            ctx.fillStyle = '#FF0000';
+            ctx.fillRect(88, monkeyBaseY - 22, 24, 8);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(96, monkeyBaseY - 24, 8, 6);
+        }
+        
+        // Banana in hand if score > 5
+        if (bananas > 5) {
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.ellipse(62, monkeyBaseY + 6, 6, 8, -0.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
     
     // Draw ropes if in rope segment
     if (currentSegment && currentSegment.type === 'rope') {
         for (let i = 0; i < (currentSegment.ropeCount || 3); i++) {
-            let ropeX = 150 + i * 200 - worldOffset;
-            ctx.strokeStyle = '#8B5A2B';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(ropeX, 150);
-            ctx.lineTo(ropeX + 20, 300);
-            ctx.stroke();
-            ctx.fillStyle = '#D2691E';
-            ctx.beginPath();
-            ctx.arc(ropeX + 10, 150, 10, 0, Math.PI * 2);
-            ctx.fill();
+            let ropeX = 150 + i * 200 - (worldOffset % 600);
+            if (ropeX > -100 && ropeX < 900) {
+                ctx.strokeStyle = '#8B5A2B';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(ropeX + 15, 100);
+                ctx.lineTo(ropeX + 15, 290);
+                ctx.stroke();
+                ctx.fillStyle = '#D2691E';
+                ctx.beginPath();
+                ctx.ellipse(ropeX + 15, 95, 12, 15, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#8B4513';
+                ctx.beginPath();
+                ctx.rect(ropeX + 10, 100, 10, 20);
+                ctx.fill();
+            }
         }
     }
     
@@ -494,16 +721,29 @@ function draw() {
     if (currentSegment && currentSegment.type === 'ground' && activeLevel.secretTunnels) {
         for (let tunnel of activeLevel.secretTunnels) {
             let tunnelX = tunnel.position - worldOffset;
-            if (Math.abs(tunnelX - 100) < 50) {
-                ctx.fillStyle = '#000000';
-                ctx.fillRect(tunnelX, 310, 20, 10);
+            if (Math.abs(tunnelX - 100) < 80 && !tunnel.used) {
+                ctx.fillStyle = '#1a1a1a';
+                ctx.fillRect(tunnelX, 315, 25, 8);
                 ctx.fillStyle = '#FFD700';
-                ctx.font = '12px monospace';
-                ctx.fillText('⬇️?', tunnelX + 3, 320);
+                ctx.font = 'bold 14px monospace';
+                ctx.shadowBlur = 0;
+                ctx.fillText('⬇️ SECRET', tunnelX + 2, 312);
             }
         }
     }
+    
+    // Draw instructions overlay for first few seconds
+    if (gameRunning && !levelComplete && bananas < 3) {
+        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        ctx.fillRect(250, 50, 300, 80);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 16px monospace';
+        ctx.fillText('🐒 Press JUMP over snakes!', 270, 85);
+        ctx.fillText('🍌 Collect bananas for lives!', 270, 115);
+    }
 }
+    
+    
 
 // ---------- CONTROLS ----------
 function handleAction(action) {
