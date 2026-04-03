@@ -1,0 +1,194 @@
+/* Jungle Escape - Complete Stylesheet */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none; /* Prevents kids from selecting text */
+}
+
+body {
+    background: linear-gradient(135deg, #1a472a 0%, #2d5a3b 100%);
+    font-family: 'Comic Neue', 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.game-container {
+    background: #2c1a0e;
+    border-radius: 30px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    border: 4px solid #d4a056;
+}
+
+/* Stats bar (lives, score, level) */
+.game-stats {
+    display: flex;
+    justify-content: space-around;
+    background: #1a0f07;
+    border-radius: 50px;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    color: #ffd966;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #2c1a0e;
+    padding: 8px 20px;
+    border-radius: 40px;
+}
+
+.stat-icon {
+    font-size: 28px;
+}
+
+/* Game canvas */
+#gameCanvas {
+    background: #87CEEB;
+    display: block;
+    margin: 0 auto;
+    border-radius: 20px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+
+/* Level grid (tabs) */
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.level-tab {
+    background: #f4a261;
+    border: none;
+    padding: 12px 8px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: inherit;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #2c1a0e;
+    box-shadow: 0 4px 0 #b3461a;
+}
+
+.level-tab:hover {
+    transform: translateY(-2px);
+    background: #ffb347;
+    box-shadow: 0 6px 0 #b3461a;
+}
+
+.level-tab:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #b3461a;
+}
+
+.level-tab.locked {
+    background: #8b8c7a;
+    box-shadow: 0 4px 0 #5a5b4e;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* On-screen action buttons */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.action-btn {
+    width: 120px;
+    height: 120px;
+    border-radius: 60px;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    transition: all 0.05s linear;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.3);
+    background: #ffd966;
+    color: #5a3a1a;
+}
+
+.jump-btn {
+    background: #6fbf4c;
+    color: white;
+    box-shadow: 0 8px 0 #3a6b1f;
+}
+
+.slide-btn {
+    background: #e67e22;
+    color: white;
+    box-shadow: 0 8px 0 #9b4a0e;
+}
+
+.action-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+}
+
+/* Game message (win/lose/hint) */
+.game-message {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.7);
+    border-radius: 30px;
+    color: #ffd966;
+    font-size: 18px;
+    font-weight: bold;
+    min-height: 55px;
+}
+
+/* Responsive for tablets & phones */
+@media (max-width: 900px) {
+    .game-container {
+        padding: 12px;
+    }
+    
+    .action-btn {
+        width: 90px;
+        height: 90px;
+        font-size: 18px;
+    }
+    
+    .level-grid {
+        gap: 8px;
+    }
+    
+    .level-tab {
+        font-size: 11px;
+        padding: 8px 4px;
+    }
+    
+    .stat {
+        font-size: 18px;
+        padding: 5px 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .action-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 14px;
+    }
+    
+    .level-tab {
+        font-size: 10px;
+    }
+}
